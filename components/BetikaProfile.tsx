@@ -10,6 +10,7 @@ import UserIcon from "./icons/UserIcon";
 import WalletIcon from "./icons/WalletIcon";
 import GiftIcon from "./icons/GiftIcon";
 import CashiaLogo from "./icons/CashiaLogo";
+import MpesaIcon from "./icons/MpesaIcon";
 
 const QUICK_AMOUNTS = [100, 200, 500, 1000];
 
@@ -70,7 +71,7 @@ export default function BetikaProfile() {
             <WalletIcon size={20} />
             <div>
               <p className="m-0 text-[11px] text-betika-subtext font-medium uppercase tracking-[0.6px]">Balance</p>
-              <p className={`mt-0.5 mb-0 text-[22px] font-extrabold ${balanceUpdated ? "balance-updated" : ""}`}>
+              <p className={`mt-0.5 mb-0 text-[14px] font-bold ${balanceUpdated ? "balance-updated" : ""}`}>
                 KES {balance.toLocaleString()}
               </p>
             </div>
@@ -79,7 +80,7 @@ export default function BetikaProfile() {
             <GiftIcon size={20} />
             <div>
               <p className="m-0 text-[11px] text-betika-subtext font-medium uppercase tracking-[0.6px]">Bonus</p>
-              <p className="mt-0.5 mb-0 text-[22px] font-extrabold">KES 0</p>
+              <p className="mt-0.5 mb-0 text-[14px] font-bold">KES 0</p>
             </div>
           </div>
         </div>
@@ -139,7 +140,7 @@ export default function BetikaProfile() {
               </button>
             </div>
             <button onClick={handleMpesa} className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-betika-green text-white text-[13px] font-bold cursor-pointer">
-              <MpesaIcon />
+              <MpesaIcon size={14} color="white" />
               Deposit with Mpesa
             </button>
           </div>
@@ -176,7 +177,7 @@ export default function BetikaProfile() {
               </button>
             </div>
             <button className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border border-betika-border bg-transparent text-betika-subtext text-[13px] font-bold cursor-pointer">
-              <MpesaIcon muted />
+              <MpesaIcon size={14} color="var(--color-betika-subtext)" />
               Withdraw with Mpesa
             </button>
           </div>
@@ -248,11 +249,3 @@ function NavAction({ icon, label, active }: { icon: React.ReactNode; label: stri
   );
 }
 
-/* ─── Icons ───────────────────────────────────────────────────────────────── */
-
-function MpesaIcon({ muted }: { muted?: boolean }) {
-  return (
-    /* eslint-disable-next-line @next/next/no-img-element */
-    <img src="/mpesa-icon.svg" alt="M-Pesa" width={14} height={16} style={{ opacity: muted ? 0.5 : 1 }} />
-  );
-}
