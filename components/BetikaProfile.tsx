@@ -24,6 +24,7 @@ export default function BetikaProfile() {
   const [balanceUpdated, setBalanceUpdated] = useState(false);
   const [showCashiaModal, setShowCashiaModal] = useState(false);
   const [showMpesaModal, setShowMpesaModal] = useState(false);
+  const [checkingBalance, setCheckingBalance] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const parsedAmount = parseInt(amount || "0", 10);
@@ -33,7 +34,11 @@ export default function BetikaProfile() {
 
   const handleDepositCashia = () => {
     if (parsedAmount < 10) { inputRef.current?.focus(); return; }
-    setShowCashiaModal(true);
+    setCheckingBalance(true);
+    setTimeout(() => {
+      setCheckingBalance(false);
+      setShowCashiaModal(true);
+    }, 1500);
   };
 
   const handleMpesa = () => {
@@ -134,9 +139,22 @@ export default function BetikaProfile() {
           <div className="flex gap-2.5">
             <div className="relative flex-1">
               <span className="absolute top-[-8px] right-2 bg-[rgba(255,235,240,0.9)] text-cashia-pink-500 text-[9px] font-bold px-[7px] py-0.5 rounded-[20px] whitespace-nowrap z-[1] tracking-[0.2px]">Special Offer</span>
-              <button onClick={handleDepositCashia} className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-cashia-pink-500 text-white text-[13px] font-bold cursor-pointer transition-colors duration-[150ms]">
-                <CashiaLogo size={18} color="white" />
-                Deposit with Cashia
+              <button
+                onClick={handleDepositCashia}
+                disabled={checkingBalance}
+                className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-cashia-pink-500 text-white text-[13px] font-bold cursor-pointer transition-colors duration-[150ms] disabled:opacity-80 disabled:cursor-not-allowed"
+              >
+                {checkingBalance ? (
+                  <>
+                    <span className="w-[14px] h-[14px] rounded-full border-2 border-white/30 border-t-white spinner shrink-0" />
+                    Checking balance…
+                  </>
+                ) : (
+                  <>
+                    <CashiaLogo size={18} color="white" />
+                    Deposit with Cashia
+                  </>
+                )}
               </button>
             </div>
             <button onClick={handleMpesa} className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-betika-green text-white text-[13px] font-bold cursor-pointer">
