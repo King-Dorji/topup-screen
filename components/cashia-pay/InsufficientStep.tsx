@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CashiaLogo from "../icons/CashiaLogo";
 import CloseIcon from "../icons/CloseIcon";
 
@@ -15,6 +15,14 @@ export default function InsufficientStep({ amount, balance }: Props) {
   const needed = Number(amount) - balance;
   const circumference = 2 * Math.PI * 26;
   const progress = phase === "counting" ? (count / 5) * circumference : circumference;
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") window.parent.postMessage({ type: "CASHIA_CLOSE" }, "*");
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, []);
 
   const startRedirect = () => {
     setPhase("counting");
@@ -34,7 +42,14 @@ export default function InsufficientStep({ amount, balance }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div
+      className="fixed inset-0 bg-[rgba(10,16,26,0.75)] backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={() => window.parent.postMessage({ type: "CASHIA_CLOSE" }, "*")}
+    >
+    <div
+      className="modal-enter w-[min(420px,100%)] rounded-[20px] bg-white shadow-[0_32px_80px_rgba(0,0,0,0.55)] overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Pink gradient header */}
       <div className="bg-gradient-to-br from-cashia-pink-500 to-cashia-pink-700 px-6 pt-7 pb-6 text-center relative">
         <button
@@ -127,6 +142,7 @@ export default function InsufficientStep({ amount, balance }: Props) {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

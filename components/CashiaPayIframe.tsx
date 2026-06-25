@@ -40,6 +40,14 @@ export default function CashiaPayIframe() {
     if (step === "otp") setTimeout(() => inputRefs.current[0]?.focus(), 100);
   }, [step]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") window.parent.postMessage({ type: "CASHIA_CLOSE" }, "*");
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, []);
+
   const handleOtpChange = (index: number, value: string) => {
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...otp];
@@ -89,45 +97,55 @@ export default function CashiaPayIframe() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header */}
-      <div className="px-6 pt-5 pb-4 border-b border-grey-100 flex items-center gap-2.5">
-        <CashiaLogo size={26} color="var(--color-cashia-pink-500)" />
-        <span className="text-[18px] font-bold text-cashia-pink-500 tracking-[-0.3px]">Cashia</span>
-        <div className="flex-1" />
-        <span className="text-[12px] text-grey-500 bg-grey-50 py-[3px] px-2 rounded-[20px] border border-grey-150">
-          Secure payment
-        </span>
-      </div>
+    /* Backdrop — drawn by Cashia's page, not Betika */
+    <div
+      className="fixed inset-0 bg-[rgba(10,16,26,0.75)] backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={() => window.parent.postMessage({ type: "CASHIA_CLOSE" }, "*")}
+    >
+      {/* Card shell — also owned by Cashia */}
+      <div
+        className="modal-enter w-[min(460px,100%)] h-[min(600px,calc(100vh-80px))] rounded-2xl overflow-hidden flex flex-col bg-white shadow-[0_32px_80px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.06)] relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 border-b border-grey-100 flex items-center gap-2.5">
+          <CashiaLogo size={26} color="var(--color-cashia-pink-500)" />
+          <span className="text-[18px] font-bold text-cashia-pink-500 tracking-[-0.3px]">Cashia</span>
+          <div className="flex-1" />
+          <span className="text-[12px] text-grey-500 bg-grey-50 py-[3px] px-2 rounded-[20px] border border-grey-150">
+            Secure payment
+          </span>
+        </div>
 
-      {/* Body */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-3">
-        {step === "loading" && <LoadingStep />}
-        {step === "otp" && (
-          <OTPStep
-            amount={amount}
-            otp={otp}
-            inputRefs={inputRefs}
-            isError={isError}
-            isComplete={isComplete}
-            onChange={handleOtpChange}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            onVerify={() => { if (isComplete) verify(otp.join("")); }}
-          />
-        )}
-        {step === "success" && <SuccessStep amount={amount} />}
-        {step === "error" && (
-          <div className="fade-in text-center">
-            <p className="text-system-red font-bold">Something went wrong.</p>
-          </div>
-        )}
-      </div>
+        {/* Body */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-3">
+          {step === "loading" && <LoadingStep />}
+          {step === "otp" && (
+            <OTPStep
+              amount={amount}
+              otp={otp}
+              inputRefs={inputRefs}
+              isError={isError}
+              isComplete={isComplete}
+              onChange={handleOtpChange}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              onVerify={() => { if (isComplete) verify(otp.join("")); }}
+            />
+          )}
+          {step === "success" && <SuccessStep amount={amount} />}
+          {step === "error" && (
+            <div className="fade-in text-center">
+              <p className="text-system-red font-bold">Something went wrong.</p>
+            </div>
+          )}
+        </div>
 
-      {/* Footer */}
-      <div className="px-6 py-3 border-t border-grey-100 flex items-center justify-center gap-1.5">
-        <LockIcon />
-        <span className="text-[11px] text-grey-400">256-bit SSL encrypted · Powered by Cashia</span>
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-grey-100 flex items-center justify-center gap-1.5">
+          <LockIcon />
+          <span className="text-[11px] text-grey-400">256-bit SSL encrypted · Powered by Cashia</span>
+        </div>
       </div>
     </div>
   );

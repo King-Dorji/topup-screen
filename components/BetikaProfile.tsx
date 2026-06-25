@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import CashiaModal from "./CashiaModal";
-import MpesaModal from "./MpesaModal";
+import { useEffect, useRef, useState } from "react";
 import BellIcon from "./icons/BellIcon";
 import ClipboardIcon from "./icons/ClipboardIcon";
 import UserIcon from "./icons/UserIcon";
@@ -54,6 +52,19 @@ export default function BetikaProfile() {
     setAmount("");
     setTimeout(() => setBalanceUpdated(false), 1600);
   };
+
+  // Listen for postMessage from Cashia and Mpesa iframes
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type === "CASHIA_PAY_SUCCESS") handlePaymentSuccess(Number(e.data.amount));
+      if (e.data?.type === "CASHIA_CLOSE") setShowCashiaModal(false);
+      if (e.data?.type === "CASHIA_REDIRECT" && e.data.url) window.location.href = e.data.url;
+      if (e.data?.type === "MPESA_PAY_SUCCESS") handlePaymentSuccess(Number(e.data.amount));
+      if (e.data?.type === "MPESA_CLOSE") setShowMpesaModal(false);
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   const card = "bg-betika-card border border-betika-border rounded-xl p-4 mb-3";
 
@@ -202,22 +213,23 @@ export default function BetikaProfile() {
         </div>
       </div>
 
-      {/* Cashia payment modal (OTP flow + insufficient balance) */}
+      {/* Cashia — fullscreen iframe, owns its own backdrop and card */}
       {showCashiaModal && (
-        <CashiaModal
-          amount={parsedAmount}
-          cashiaBalance={CASHIA_BALANCE}
-          onClose={() => setShowCashiaModal(false)}
-          onSuccess={handlePaymentSuccess}
+        <iframe
+          src={`/cashia-pay?amount=${parsedAmount}&balance=${CASHIA_BALANCE}`}
+          style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", border: "none", zIndex: 200 }}
+          title="Cashia Payment"
+          sandbox="allow-scripts allow-same-origin allow-forms"
         />
       )}
 
-      {/* Mpesa STK push simulation */}
+      {/* Mpesa — fullscreen iframe, owns its own backdrop and card */}
       {showMpesaModal && (
-        <MpesaModal
-          amount={parsedAmount}
-          onClose={() => setShowMpesaModal(false)}
-          onSuccess={handlePaymentSuccess}
+        <iframe
+          src={`/mpesa-pay?amount=${parsedAmount}`}
+          style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", border: "none", zIndex: 200 }}
+          title="M-Pesa Payment"
+          sandbox="allow-scripts allow-same-origin allow-forms"
         />
       )}
     </div>
