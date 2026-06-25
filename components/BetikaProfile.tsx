@@ -89,11 +89,11 @@ export default function BetikaProfile() {
         <div className={`${card} flex gap-0 py-3.5 px-5`}>
           <div className="flex-1 border-r border-betika-border pr-4">
             <p className="m-0 mb-2 text-[13px] font-semibold">Freebets &amp; Promotions</p>
-            <button className="bg-transparent border border-betika-border text-betika-accent rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
+            <button className="bg-betika-btn-bg border-none text-betika-green-dark rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
           </div>
           <div className="flex-1 pl-4">
             <p className="m-0 mb-2 text-[13px] font-semibold">Jackpot Streaks</p>
-            <button className="bg-transparent border border-betika-border text-betika-accent rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
+            <button className="bg-betika-btn-bg border-none text-betika-green-dark rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
           </div>
         </div>
 
@@ -145,8 +145,8 @@ export default function BetikaProfile() {
             </button>
           </div>
 
-          <p className="mt-2.5 mb-0 text-[11px] text-betika-subtext">
-            🎁 3 Free deposits daily! Only with Cashia
+          <p className="mt-2.5 mb-0 text-[14px] text-betika-subtext">
+            3 Free deposits daily! Only with Cashia
           </p>
         </div>
 
