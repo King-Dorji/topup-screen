@@ -16,22 +16,6 @@ const QUICK_AMOUNTS = [100, 200, 500, 1000];
 // Simulated cashia balance — amounts > this trigger the "insufficient" redirect
 const CASHIA_BALANCE = 500;
 
-const s = {
-  page: {
-    minHeight: "100vh",
-    background: "var(--betika-bg)",
-    color: "var(--betika-text)",
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  } as React.CSSProperties,
-  card: {
-    background: "var(--betika-card)",
-    border: "1px solid var(--betika-border)",
-    borderRadius: 12,
-    padding: "16px 20px",
-    marginBottom: 12,
-  } as React.CSSProperties,
-};
-
 export default function BetikaProfile() {
   const [amount, setAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -65,138 +49,134 @@ export default function BetikaProfile() {
     setTimeout(() => setBalanceUpdated(false), 1600);
   };
 
+  const card = "bg-betika-card border border-betika-border rounded-xl p-4 mb-3";
+
   return (
-    <div style={s.page}>
+    <div className="min-h-screen bg-betika-bg text-betika-text">
       <BetikaNav />
 
-      <div style={{ maxWidth: 780, margin: "0 auto", padding: "20px 16px 60px" }}>
-        {/* Profile header */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <div style={{
-            width: 52, height: 52, borderRadius: "50%",
-            background: "var(--betika-card)",
-            border: "2px solid var(--betika-border)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
+      <div className="max-w-[780px] mx-auto px-4 pt-6 pb-[60px]">
+        {/* Profile header — row layout, centered */}
+        <div className="flex items-center justify-center gap-3 mb-5">
+          <div className="w-[52px] h-[52px] rounded-full bg-betika-avatar flex items-center justify-center">
             <UserIcon width={22} height={22} className="" />
           </div>
-          <div>
-            <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>(254) 706-576203</p>
-            <p style={{ margin: "2px 0 0", fontSize: 12, color: "var(--betika-subtext)" }}>Verified account</p>
-          </div>
+          <p className="m-0 text-[17px] font-bold">(254) 706-576203</p>
         </div>
 
         {/* Balance card */}
-        <div style={{ ...s.card, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className={`${card} flex justify-between items-center`}>
+          <div className="flex items-center gap-2.5">
             <WalletIcon size={20} />
             <div>
-              <p style={{ margin: 0, fontSize: 11, color: "var(--betika-subtext)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.6px" }}>Balance</p>
-              <p className={balanceUpdated ? "balance-updated" : ""} style={{ margin: "2px 0 0", fontSize: 22, fontWeight: 800 }}>
+              <p className="m-0 text-[11px] text-betika-subtext font-medium uppercase tracking-[0.6px]">Balance</p>
+              <p className={`mt-0.5 mb-0 text-[22px] font-extrabold ${balanceUpdated ? "balance-updated" : ""}`}>
                 KES {balance.toLocaleString()}
               </p>
             </div>
           </div>
-          <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="text-right flex items-center gap-2.5">
             <GiftIcon size={20} />
             <div>
-              <p style={{ margin: 0, fontSize: 11, color: "var(--betika-subtext)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.6px" }}>Bonus</p>
-              <p style={{ margin: "2px 0 0", fontSize: 22, fontWeight: 800 }}>KES 0</p>
+              <p className="m-0 text-[11px] text-betika-subtext font-medium uppercase tracking-[0.6px]">Bonus</p>
+              <p className="mt-0.5 mb-0 text-[22px] font-extrabold">KES 0</p>
             </div>
           </div>
         </div>
 
         {/* Freebets / Jackpot */}
-        <div style={{ ...s.card, display: "flex", gap: 0, padding: "14px 20px" }}>
-          <div style={{ flex: 1, borderRight: "1px solid var(--betika-border)", paddingRight: 16 }}>
-            <p style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 600 }}>Freebets &amp; Promotions</p>
-            <button style={outlineBtn}>View all</button>
+        <div className={`${card} flex gap-0 py-3.5 px-5`}>
+          <div className="flex-1 border-r border-betika-border pr-4">
+            <p className="m-0 mb-2 text-[13px] font-semibold">Freebets &amp; Promotions</p>
+            <button className="bg-transparent border border-betika-border text-betika-accent rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
           </div>
-          <div style={{ flex: 1, paddingLeft: 16 }}>
-            <p style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 600 }}>Jackpot Streaks</p>
-            <button style={outlineBtn}>View all</button>
+          <div className="flex-1 pl-4">
+            <p className="m-0 mb-2 text-[13px] font-semibold">Jackpot Streaks</p>
+            <button className="bg-transparent border border-betika-border text-betika-accent rounded-md px-3.5 py-[5px] text-[12px] font-semibold cursor-pointer">View all</button>
           </div>
         </div>
 
         {/* Deposit card */}
-        <div style={s.card}>
-          <p style={{ margin: "0 0 2px", fontSize: 16, fontWeight: 700 }}>Deposit</p>
-          <p style={{ margin: "0 0 14px", fontSize: 12, color: "var(--betika-subtext)" }}>Send money into your Betika account</p>
+        <div className={card}>
+          <p className="m-0 mb-0.5 text-[16px] font-bold">Deposit</p>
+          <p className="m-0 mb-3.5 text-[12px] text-betika-subtext">Send money into your Betika account</p>
 
           {/* Amount input */}
-          <div style={{ display: "flex", alignItems: "center", background: "var(--betika-input-bg)", border: "1px solid var(--betika-border)", borderRadius: 8, marginBottom: 6, overflow: "hidden" }}>
-            <button onClick={() => setAmount((p) => String(Math.max(0, parseInt(p || "0") - 1)))} style={pmBtn}>−</button>
+          <div className="flex items-center bg-betika-input-bg border border-betika-border rounded-lg mb-1.5 overflow-hidden">
+            <button onClick={() => setAmount((p) => String(Math.max(0, parseInt(p || "0") - 1)))} className="py-[13px] px-[18px] bg-transparent border-none text-betika-subtext cursor-pointer text-[18px] font-bold">−</button>
             <input
               ref={inputRef}
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Enter amount to deposit"
-              style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--betika-text)", fontSize: 14, textAlign: "center" }}
+              className="flex-1 bg-transparent border-none outline-none text-betika-text text-[14px] text-center"
             />
-            <button onClick={() => setAmount((p) => String(parseInt(p || "0") + 1))} style={pmBtn}>+</button>
+            <button onClick={() => setAmount((p) => String(parseInt(p || "0") + 1))} className="py-[13px] px-[18px] bg-transparent border-none text-betika-subtext cursor-pointer text-[18px] font-bold">+</button>
           </div>
-          <p style={{ margin: "0 0 10px", fontSize: 11, color: "var(--betika-subtext)" }}>Minimum KES 10. All transactions are subject to 5% tax.</p>
+          <p className="m-0 mb-2.5 text-[11px] text-betika-subtext">Minimum KES 10. All transactions are subject to 5% tax.</p>
 
           {/* Quick amounts */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+          <div className="flex gap-2 mb-3.5">
             {QUICK_AMOUNTS.map((n) => (
-              <button key={n} onClick={() => handleQuickAmount(n)} style={quickBtn}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#2c4a6e")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "var(--betika-card-inner)")}>
+              <button
+                key={n}
+                onClick={() => handleQuickAmount(n)}
+                className="flex-1 py-[9px] rounded-[20px] border border-betika-border bg-betika-card-inner text-betika-text text-[13px] font-semibold cursor-pointer transition-colors duration-[120ms] hover:bg-betika-border"
+              >
                 +{n}
               </button>
             ))}
           </div>
 
           {/* Deposit buttons */}
-          <div style={{ display: "flex", gap: 10 }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <span style={specialBadge}>Special Offer</span>
-              <button onClick={handleDepositCashia} style={{ ...cashiaBtn }}>
+          <div className="flex gap-2.5">
+            <div className="relative flex-1">
+              <span className="absolute top-[-8px] right-2 bg-[rgba(255,235,240,0.9)] text-cashia-pink-500 text-[9px] font-bold px-[7px] py-0.5 rounded-[20px] whitespace-nowrap z-[1] tracking-[0.2px]">Special Offer</span>
+              <button onClick={handleDepositCashia} className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-cashia-pink-500 text-white text-[13px] font-bold cursor-pointer transition-colors duration-[150ms]">
                 <CashiaLogo size={18} color="white" />
                 Deposit with Cashia
               </button>
             </div>
-            <button onClick={handleMpesa} style={mpesaBtn}>
-              <MpesaCircleIcon />
+            <button onClick={handleMpesa} className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-betika-green text-white text-[13px] font-bold cursor-pointer">
+              <MpesaIcon />
               Deposit with Mpesa
             </button>
           </div>
 
-          <p style={{ margin: "10px 0 0", fontSize: 11, color: "var(--betika-subtext)" }}>
+          <p className="mt-2.5 mb-0 text-[11px] text-betika-subtext">
             🎁 3 Free deposits daily! Only with Cashia
           </p>
         </div>
 
         {/* Withdrawals card */}
-        <div style={s.card}>
-          <p style={{ margin: "0 0 2px", fontSize: 16, fontWeight: 700 }}>Withdrawals</p>
-          <p style={{ margin: "0 0 14px", fontSize: 12, color: "var(--betika-subtext)" }}>Withdraw money from your Betika wallet</p>
+        <div className={card}>
+          <p className="m-0 mb-0.5 text-[16px] font-bold">Withdrawals</p>
+          <p className="m-0 mb-3.5 text-[12px] text-betika-subtext">Withdraw money from your Betika wallet</p>
 
-          <div style={{ display: "flex", alignItems: "center", background: "var(--betika-input-bg)", border: "1px solid var(--betika-border)", borderRadius: 8, marginBottom: 6, overflow: "hidden" }}>
-            <button style={pmBtn}>−</button>
+          <div className="flex items-center bg-betika-input-bg border border-betika-border rounded-lg mb-1.5 overflow-hidden">
+            <button className="py-[13px] px-[18px] bg-transparent border-none text-betika-subtext cursor-pointer text-[18px] font-bold">−</button>
             <input
               type="number"
               value={withdrawAmount}
               onChange={(e) => setWithdrawAmount(e.target.value)}
               placeholder="Enter amount to withdraw"
-              style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--betika-text)", fontSize: 14, textAlign: "center" }}
+              className="flex-1 bg-transparent border-none outline-none text-betika-text text-[14px] text-center"
             />
-            <button style={pmBtn}>+</button>
+            <button className="py-[13px] px-[18px] bg-transparent border-none text-betika-subtext cursor-pointer text-[18px] font-bold">+</button>
           </div>
-          <p style={{ margin: "0 0 14px", fontSize: 11, color: "var(--betika-subtext)" }}>Minimum KES 50, Maximum KES 300,000. All transactions are subject to 5% tax.</p>
+          <p className="m-0 mb-3.5 text-[11px] text-betika-subtext">Minimum KES 50, Maximum KES 300,000. All transactions are subject to 5% tax.</p>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <span style={specialBadge}>Special Offer</span>
-              <button style={{ ...cashiaBtn }}>
+          <div className="flex gap-2.5">
+            <div className="relative flex-1">
+              <span className="absolute top-[-8px] right-2 bg-[rgba(255,235,240,0.9)] text-cashia-pink-500 text-[9px] font-bold px-[7px] py-0.5 rounded-[20px] whitespace-nowrap z-[1] tracking-[0.2px]">Special Offer</span>
+              <button className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-cashia-pink-500 text-white text-[13px] font-bold cursor-pointer transition-colors duration-[150ms]">
                 <CashiaLogo size={18} color="white" />
                 Withdraw with Cashia
               </button>
             </div>
-            <button style={{ ...mpesaBtn, background: "transparent", border: "1px solid var(--betika-border)" }}>
-              <MpesaCircleIcon muted />
+            <button className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border border-betika-border bg-transparent text-betika-subtext text-[13px] font-bold cursor-pointer">
+              <MpesaIcon muted />
               Withdraw with Mpesa
             </button>
           </div>
@@ -231,30 +211,26 @@ const NAV_ITEMS = ["Home", "Live (185)", "Jackpots", "Shishika Bet (1)", "Aviato
 
 function BetikaNav() {
   return (
-    <nav style={{ background: "#1a2332", borderBottom: "1px solid #222f45", position: "sticky", top: 0, zIndex: 100 }}>
+    <nav className="bg-betika-nav sticky top-0 z-[100]">
       {/* Top row */}
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 52, gap: 20 }}>
+      <div className="max-w-[1280px] mx-auto px-4 flex items-center h-[52px] gap-5">
         <Image src="/betika-logo.png" alt="Betika" width={90} height={30} style={{ objectFit: "contain" }} />
-        <div style={{ flex: 1 }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <NavAction icon={<BellIcon size={16} color="#a0aec0" />} label="Notifications" />
-          <NavAction icon={<ClipboardIcon size={16} color="#a0aec0" />} label="My Bets" />
+        <div className="flex-1" />
+        <div className="flex items-center gap-4">
+          <NavAction icon={<BellIcon size={16} color="var(--betika-subtext)" />} label="Notifications" />
+          <NavAction icon={<ClipboardIcon size={16} color="var(--betika-subtext)" />} label="My Bets" />
           <NavAction icon={<UserIcon width={16} height={16} className="" />} label="Profile" active />
-          <button style={{ background: "#4CAF50", color: "#fff", border: "none", borderRadius: 6, padding: "7px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.2px" }}>
+          {/* Deposit button — orange bg, green text */}
+          <button className="bg-betika-accent text-betika-bg border-none rounded-lg py-[7px] px-5 text-[13px] font-bold cursor-pointer">
             Deposit
           </button>
         </div>
       </div>
 
       {/* Sub nav */}
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px", display: "flex", gap: 0, overflowX: "auto", scrollbarWidth: "none", borderTop: "1px solid #222f45" }}>
-        {NAV_ITEMS.map((item, i) => (
-          <button key={item} style={{
-            background: "none", border: "none", color: i === 0 ? "#fff" : "#8a9bb5",
-            fontSize: 12, fontWeight: i === 0 ? 600 : 400, cursor: "pointer",
-            padding: "9px 12px", whiteSpace: "nowrap",
-            borderBottom: i === 0 ? "2px solid #4CAF50" : "2px solid transparent",
-          }}>
+      <div className="max-w-[1280px] mx-auto px-4 flex gap-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        {NAV_ITEMS.map((item) => (
+          <button key={item} className="bg-transparent border-none text-betika-subtext text-[12px] font-normal cursor-pointer py-[9px] px-3 whitespace-nowrap border-b-2 border-transparent">
             {item}
           </button>
         ))}
@@ -265,60 +241,18 @@ function BetikaNav() {
 
 function NavAction({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
   return (
-    <button style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", color: active ? "#fff" : "#8a9bb5", fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer" }}>
+    <button className={`flex items-center gap-[5px] bg-transparent border-none text-[12px] cursor-pointer ${active ? "text-betika-green font-semibold" : "text-betika-subtext font-normal"}`}>
       {icon}
       {label}
     </button>
   );
 }
 
-/* ─── Shared styles ───────────────────────────────────────────────────────── */
-
-const outlineBtn: React.CSSProperties = {
-  background: "none", border: "1px solid var(--betika-border)",
-  color: "#c8b84a", borderRadius: 6, padding: "5px 14px",
-  fontSize: 12, fontWeight: 600, cursor: "pointer",
-};
-
-const pmBtn: React.CSSProperties = {
-  padding: "13px 18px", background: "none", border: "none",
-  color: "var(--betika-subtext)", cursor: "pointer", fontSize: 18, fontWeight: 700,
-};
-
-const quickBtn: React.CSSProperties = {
-  flex: 1, padding: "9px 0", borderRadius: 6,
-  border: "1px solid var(--betika-border)",
-  background: "var(--betika-card-inner)", color: "var(--betika-text)",
-  fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "background 0.12s",
-};
-
-const specialBadge: React.CSSProperties = {
-  position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)",
-  background: "#f5c518", color: "#1a2332", fontSize: 10, fontWeight: 800,
-  padding: "2px 10px", borderRadius: 20, whiteSpace: "nowrap", zIndex: 1,
-};
-
-const cashiaBtn: React.CSSProperties = {
-  width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-  padding: "12px 16px", borderRadius: 8, border: "none",
-  background: "#dc1f5c", color: "#fff", fontSize: 13, fontWeight: 700,
-  cursor: "pointer", transition: "background 0.15s",
-};
-
-const mpesaBtn: React.CSSProperties = {
-  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-  padding: "12px 16px", borderRadius: 8, border: "none",
-  background: "#4CAF50", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
-};
-
 /* ─── Icons ───────────────────────────────────────────────────────────────── */
 
-function MpesaCircleIcon({ muted }: { muted?: boolean }) {
-  const c = muted ? "#7e93b2" : "white";
+function MpesaIcon({ muted }: { muted?: boolean }) {
   return (
-    <svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" fill={muted ? "transparent" : "rgba(255,255,255,0.2)"} stroke={c} strokeWidth={1.5} />
-      <text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="900" fill={c} fontFamily="Arial Black, sans-serif">M</text>
-    </svg>
+    /* eslint-disable-next-line @next/next/no-img-element */
+    <img src="/mpesa-icon.svg" alt="M-Pesa" width={14} height={16} style={{ opacity: muted ? 0.5 : 1 }} />
   );
 }

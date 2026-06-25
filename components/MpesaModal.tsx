@@ -39,26 +39,25 @@ export default function MpesaModal({ amount, onClose, onSuccess }: MpesaModalPro
 
   return (
     <>
-      <div onClick={phase !== "success" ? onClose : undefined} className="fade-in"
-        style={{ position: "fixed", inset: 0, background: "rgba(10,16,26,0.75)", backdropFilter: "blur(4px)", zIndex: 200 }} />
+      <div onClick={phase !== "success" ? onClose : undefined} className="fade-in fixed inset-0 bg-[rgba(10,16,26,0.75)] backdrop-blur-sm z-[200]" />
 
-      <div style={{ position: "fixed", inset: 0, zIndex: 201, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, pointerEvents: "none" }}>
-        <div className="modal-enter" style={{ pointerEvents: "auto", width: "min(400px, 100%)", borderRadius: 20, background: "#fff", boxShadow: "0 32px 80px rgba(0,0,0,0.5)", overflow: "hidden" }}>
+      <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none">
+        <div className="modal-enter pointer-events-auto w-[min(400px,100%)] rounded-[20px] bg-white shadow-[0_32px_80px_rgba(0,0,0,0.5)] overflow-hidden">
 
           {/* Green Mpesa header */}
-          <div style={{ background: "linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)", padding: "24px 24px 20px", textAlign: "center", position: "relative" }}>
+          <div className="bg-gradient-to-br from-mpesa-green to-mpesa-green-dark px-6 pt-6 pb-5 text-center relative">
             {phase !== "success" && (
-              <button onClick={onClose} style={{ position: "absolute", top: 12, right: 12, width: 28, height: 28, borderRadius: "50%", border: "none", background: "rgba(255,255,255,0.2)", cursor: "pointer", fontSize: 13, color: "#fff" }}>✕</button>
+              <button onClick={onClose} className="absolute top-3 right-3 w-7 h-7 rounded-full border-none bg-[rgba(255,255,255,0.2)] cursor-pointer text-[13px] text-white">✕</button>
             )}
-            <div style={{ fontSize: 40, marginBottom: 8 }}>
+            <div className="text-[40px] mb-2">
               {phase === "success" ? "✅" : "📱"}
             </div>
-            <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: "white" }}>
+            <h2 className="m-0 text-[17px] font-extrabold text-white">
               {phase === "push-sent" && "STK Push Sent"}
               {phase === "waiting" && "Waiting for payment…"}
               {phase === "success" && "Payment Received!"}
             </h2>
-            <p style={{ margin: "5px 0 0", fontSize: 12, color: "rgba(255,255,255,0.85)" }}>
+            <p className="mt-[5px] mb-0 text-[12px] text-[rgba(255,255,255,0.85)]">
               {phase === "push-sent" && "Check your phone for the M-Pesa prompt"}
               {phase === "waiting" && "Complete the payment on your phone"}
               {phase === "success" && "Your Betika balance has been updated"}
@@ -66,24 +65,24 @@ export default function MpesaModal({ amount, onClose, onSuccess }: MpesaModalPro
           </div>
 
           {/* Body */}
-          <div style={{ padding: "20px 24px" }}>
+          <div className="px-6 py-5">
             {/* Amount summary */}
-            <div style={{ background: "#f3f2f2", borderRadius: 10, padding: "12px 16px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="bg-grey-100 rounded-[10px] px-4 py-3 mb-4 flex justify-between items-center">
               <div>
-                <p style={{ margin: 0, fontSize: 11, color: "#89898a", fontWeight: 500 }}>DEPOSITING TO BETIKA</p>
-                <p style={{ margin: "2px 0 0", fontSize: 13, fontWeight: 700, color: "#202020" }}>+254 753 777 888</p>
+                <p className="m-0 text-[11px] text-grey-500 font-medium">DEPOSITING TO BETIKA</p>
+                <p className="mt-0.5 mb-0 text-[13px] font-bold text-grey-900">+254 753 777 888</p>
               </div>
-              <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#27ae60" }}>KES {amount.toLocaleString()}</p>
+              <p className="m-0 text-[20px] font-extrabold text-mpesa-green-dark">KES {amount.toLocaleString()}</p>
             </div>
 
             {phase === "push-sent" && (
-              <div style={{ textAlign: "center", padding: "8px 0" }}>
-                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 12 }}>
+              <div className="text-center py-2">
+                <div className="flex justify-center gap-1.5 mb-3">
                   {[0, 1, 2].map((i) => (
-                    <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "#2ecc71", opacity: 0.3, animation: `dotBounce 1s ease-in-out ${i * 0.15}s infinite` }} />
+                    <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--color-mpesa-green)", opacity: 0.3, animation: `dotBounce 1s ease-in-out ${i * 0.15}s infinite` }} />
                   ))}
                 </div>
-                <p style={{ margin: 0, fontSize: 12, color: "#89898a" }}>
+                <p className="m-0 text-[12px] text-grey-500">
                   An M-Pesa STK push has been sent to your phone.<br />
                   Enter your M-Pesa PIN to confirm.
                 </p>
@@ -91,21 +90,21 @@ export default function MpesaModal({ amount, onClose, onSuccess }: MpesaModalPro
             )}
 
             {phase === "waiting" && (
-              <div style={{ textAlign: "center", padding: "8px 0" }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", border: "3px solid #e9e9eb", borderTop: "3px solid #2ecc71", margin: "0 auto 12px", animation: "spin 0.9s linear infinite" }} />
-                <p style={{ margin: 0, fontSize: 12, color: "#89898a" }}>
+              <div className="text-center py-2">
+                <div className="w-12 h-12 rounded-full border-[3px] border-grey-150 border-t-[3px] border-t-mpesa-green mx-auto mb-3 spinner" />
+                <p className="m-0 text-[12px] text-grey-500">
                   Waiting for confirmation{"." .repeat(dots)}
                 </p>
-                <p style={{ margin: "8px 0 0", fontSize: 11, color: "#c3c3c5" }}>This will complete automatically</p>
+                <p className="mt-2 mb-0 text-[11px] text-grey-300">This will complete automatically</p>
               </div>
             )}
 
             {phase === "success" && (
-              <div className="fade-in" style={{ textAlign: "center", padding: "4px 0 8px" }}>
-                <p style={{ margin: 0, fontSize: 14, color: "#202020", fontWeight: 600 }}>
+              <div className="fade-in text-center py-1 pb-2">
+                <p className="m-0 text-[14px] text-grey-900 font-semibold">
                   KES {amount.toLocaleString()} deposited successfully
                 </p>
-                <p style={{ margin: "6px 0 0", fontSize: 12, color: "#89898a" }}>Closing automatically…</p>
+                <p className="mt-1.5 mb-0 text-[12px] text-grey-500">Closing automatically…</p>
               </div>
             )}
           </div>

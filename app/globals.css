@@ -1,5 +1,56 @@
 @import "tailwindcss";
 
+@theme {
+  /* Cashia */
+  --color-cashia-pink-50: #fbf5f9;
+  --color-cashia-pink-100: #f7d7e3;
+  --color-cashia-pink-200: #f3b8cc;
+  --color-cashia-pink-300: #ed8fae;
+  --color-cashia-pink-400: #e55b88;
+  --color-cashia-pink-500: #dd1f5d;
+  --color-cashia-pink-600: #c21b51;
+  --color-cashia-pink-700: #ab1847;
+  /* Greyscale */
+  --color-grey-00: #ffffff;
+  --color-grey-50: #fafafb;
+  --color-grey-100: #f3f2f2;
+  --color-grey-150: #e9e9eb;
+  --color-grey-200: #d8d8d4;
+  --color-grey-300: #c3c3c5;
+  --color-grey-400: #a8a8aa;
+  --color-grey-500: #89898a;
+  --color-grey-600: #686869;
+  --color-grey-700: #49494a;
+  --color-grey-800: #313131;
+  --color-grey-900: #202020;
+  /* System */
+  --color-system-green: #17b530;
+  --color-system-red: #f73b3b;
+  /* Mpesa */
+  --color-mpesa-green: #2ecc71;
+  --color-mpesa-green-dark: #27ae60;
+  --color-mpesa-success-bg: #f1f9f1;
+  --color-mpesa-success-border: #b5e6bf;
+  --color-mpesa-success-text: #128c25;
+  /* OTP error */
+  --color-otp-error-bg: #fff8f8;
+  --color-otp-error-shadow: #fde8e8;
+  /* Betika */
+  --color-betika-bg: #16202c;
+  --color-betika-nav: #16202c;
+  --color-betika-card: #23313d;
+  --color-betika-card-inner: #2d4558;
+  --color-betika-border: #2d4558;
+  --color-betika-accent: #fed800;
+  --color-betika-green: #60991a;
+  --color-betika-green-dark: #34530e;
+  --color-betika-orange: #f97316;
+  --color-betika-avatar: #3d7a4e;
+  --color-betika-text: #f0f2f5;
+  --color-betika-subtext: #c5c5c5;
+  --color-betika-input-bg: #15202d;
+}
+
 @layer base {
   :root {
     /* Cashia color tokens */
@@ -8,7 +59,7 @@
     --color-cashia-pink-200: #f3b8cc;
     --color-cashia-pink-300: #ed8fae;
     --color-cashia-pink-400: #e55b88;
-    --color-cashia-pink-500: #dc1f5c;
+    --color-cashia-pink-500: #dd1f5d;
     --color-cashia-pink-600: #c21b51;
     --color-cashia-pink-700: #ab1847;
 
@@ -29,15 +80,19 @@
     --color-red-500: #f73b3b;
 
     /* Betika dark palette */
-    --betika-bg: #141f2e;
-    --betika-card: #1e2d42;
-    --betika-card-inner: #243350;
-    --betika-border: #2c3e5a;
-    --betika-accent: #f5c518;
-    --betika-green: #25d366;
-    --betika-text: #e2e8f4;
-    --betika-subtext: #7e93b2;
-    --betika-input-bg: #1a2840;
+    --betika-bg: #16202c;
+    --betika-nav: #16202c;
+    --betika-card: #23313d;
+    --betika-card-inner: #2d4558;
+    --betika-border: #2d4558;
+    --betika-accent: #fed800;
+    --betika-green: #60991a;
+    --betika-green-dark: #34530e;
+    --betika-orange: #f97316;
+    --betika-avatar: #3d7a4e;
+    --betika-text: #f0f2f5;
+    --betika-subtext: #c5c5c5;
+    --betika-input-bg: #15202d;
   }
 
   * {
