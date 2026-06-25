@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Betika × Cashia — Deposit MVP",
-  description: "Betika Cashia deposit flow MVP",
+  title: "Betika | Best online sports betting and casino in kenya",
+  description: "Betika | Best online sports betting and casino in kenya",
 };
 
 export default function RootLayout({
