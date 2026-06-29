@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CashiaLogo from "./icons/CashiaLogo";
 import LockIcon from "./icons/LockIcon";
 import LoadingStep from "./cashia-pay/LoadingStep";
@@ -92,8 +92,19 @@ export default function CashiaPayIframe() {
 
   const isComplete = otp.filter(Boolean).length === OTP_LENGTH;
 
+  const handleTopUpSuccess = useCallback((topUpAmount: number) => {
+    setBalance((prev) => prev + topUpAmount);
+    setStep("otp");
+  }, []);
+
   if (step === "insufficient") {
-    return <InsufficientStep amount={amount} balance={balance} />;
+    return (
+      <InsufficientStep
+        amount={amount}
+        balance={balance}
+        onTopUpSuccess={handleTopUpSuccess}
+      />
+    );
   }
 
   return (
