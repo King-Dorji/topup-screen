@@ -14,6 +14,7 @@ const QUICK_AMOUNTS = [100, 200, 500, 1000];
 
 // Simulated cashia balance — amounts > this trigger the "insufficient" redirect
 const CASHIA_BALANCE = 500;
+const BETIKA_PHONE = "254706575204";
 
 export default function BetikaProfile() {
   const [amount, setAmount] = useState("");
@@ -21,7 +22,7 @@ export default function BetikaProfile() {
   const [balance, setBalance] = useState(0);
   const [balanceUpdated, setBalanceUpdated] = useState(false);
   const [showCashiaModal, setShowCashiaModal] = useState(false);
-  const [showMpesaModal, setShowMpesaModal] = useState(false);
+  const [cashiaMember, setCashiaMember] = useState(true);
   const [checkingBalance, setCheckingBalance] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,23 +31,22 @@ export default function BetikaProfile() {
   const handleQuickAmount = (n: number) =>
     setAmount((prev) => String(parseInt(prev || "0", 10) + n));
 
-  const handleDepositCashia = () => {
+  const handleDepositCashia = (member: boolean) => {
     if (parsedAmount < 10) { inputRef.current?.focus(); return; }
-    setCheckingBalance(true);
-    setTimeout(() => {
-      setCheckingBalance(false);
+    setCashiaMember(member);
+    if (member) {
+      setCheckingBalance(true);
+      setTimeout(() => {
+        setCheckingBalance(false);
+        setShowCashiaModal(true);
+      }, 1500);
+    } else {
       setShowCashiaModal(true);
-    }, 1500);
-  };
-
-  const handleMpesa = () => {
-    if (parsedAmount < 10) { inputRef.current?.focus(); return; }
-    setShowMpesaModal(true);
+    }
   };
 
   const handlePaymentSuccess = (paid: number) => {
     setShowCashiaModal(false);
-    setShowMpesaModal(false);
     setBalance((prev) => prev + paid);
     setBalanceUpdated(true);
     setAmount("");
@@ -59,8 +59,6 @@ export default function BetikaProfile() {
       if (e.data?.type === "CASHIA_PAY_SUCCESS") handlePaymentSuccess(Number(e.data.amount));
       if (e.data?.type === "CASHIA_CLOSE") setShowCashiaModal(false);
       if (e.data?.type === "CASHIA_REDIRECT" && e.data.url) window.location.href = e.data.url;
-      if (e.data?.type === "MPESA_PAY_SUCCESS") handlePaymentSuccess(Number(e.data.amount));
-      if (e.data?.type === "MPESA_CLOSE") setShowMpesaModal(false);
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
@@ -151,7 +149,7 @@ export default function BetikaProfile() {
             <div className="relative flex-1">
               <span className="absolute top-[-8px] right-2 bg-[rgba(255,235,240,0.9)] text-cashia-pink-500 text-[9px] font-bold px-[7px] py-0.5 rounded-[20px] whitespace-nowrap z-[1] tracking-[0.2px]">Special Offer</span>
               <button
-                onClick={handleDepositCashia}
+                onClick={() => handleDepositCashia(true)}
                 disabled={checkingBalance}
                 className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-cashia-pink-500 text-white text-[13px] font-bold cursor-pointer transition-colors duration-[150ms] disabled:opacity-80 disabled:cursor-not-allowed"
               >
@@ -168,10 +166,16 @@ export default function BetikaProfile() {
                 )}
               </button>
             </div>
-            <button onClick={handleMpesa} className="flex-1 flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border-none bg-betika-green text-white text-[13px] font-bold cursor-pointer">
-              <MpesaIcon size={14} color="white" />
-              Deposit with Mpesa
-            </button>
+            <div className="relative flex-1">
+              <span className="absolute top-[-8px] right-2 bg-[rgba(255,235,240,0.9)] text-cashia-pink-500 text-[9px] font-bold px-[7px] py-0.5 rounded-[20px] whitespace-nowrap z-[1] tracking-[0.2px]">New to Cashia?</span>
+              <button
+                onClick={() => handleDepositCashia(false)}
+                className="w-full flex items-center justify-center gap-[7px] py-3 px-4 rounded-lg border border-cashia-pink-200 bg-cashia-pink-50 text-cashia-pink-500 text-[13px] font-bold cursor-pointer hover:bg-cashia-pink-100 transition-colors duration-[150ms]"
+              >
+                <CashiaLogo size={18} color="var(--color-cashia-pink-500)" />
+                Deposit with Cashia
+              </button>
+            </div>
           </div>
 
           <p className="mt-2.5 mb-0 text-[14px] text-betika-subtext">
@@ -216,19 +220,9 @@ export default function BetikaProfile() {
       {/* Cashia — fullscreen iframe, owns its own backdrop and card */}
       {showCashiaModal && (
         <iframe
-          src={`/cashia-pay?amount=${parsedAmount}&balance=${CASHIA_BALANCE}`}
+          src={`/cashia-pay?amount=${parsedAmount}&phone=${BETIKA_PHONE}&member=${cashiaMember}${cashiaMember ? `&balance=${CASHIA_BALANCE}` : ""}`}
           style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", border: "none", zIndex: 200 }}
           title="Cashia Payment"
-          sandbox="allow-scripts allow-same-origin allow-forms"
-        />
-      )}
-
-      {/* Mpesa — fullscreen iframe, owns its own backdrop and card */}
-      {showMpesaModal && (
-        <iframe
-          src={`/mpesa-pay?amount=${parsedAmount}`}
-          style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", border: "none", zIndex: 200 }}
-          title="M-Pesa Payment"
           sandbox="allow-scripts allow-same-origin allow-forms"
         />
       )}

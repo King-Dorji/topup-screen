@@ -1,14 +1,22 @@
 import CashiaLogo from "../icons/CashiaLogo";
 
-export default function LoadingStep() {
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+export default function LoadingStep({
+  title = "Preparing your payment",
+  subtitle = "Sending OTP to your phone…",
+}: Props) {
   return (
     <div className="fade-in text-center flex flex-col items-center gap-5">
       <div className="w-16 h-16 rounded-full bg-cashia-pink-50 flex items-center justify-center">
         <CashiaLogo size={32} color="var(--color-cashia-pink-500)" />
       </div>
       <div>
-        <p className="m-0 text-[16px] font-semibold text-grey-900">Preparing your payment</p>
-        <p className="mt-1.5 mb-0 text-[13px] text-grey-500">Sending OTP to your phone…</p>
+        <p className="m-0 text-[16px] font-semibold text-grey-900">{title}</p>
+        <p className="mt-1.5 mb-0 text-[13px] text-grey-500">{subtitle}</p>
       </div>
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
