@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import CashiaLogo from "../icons/CashiaLogo";
 import CloseIcon from "../icons/CloseIcon";
-import MpesaIcon from "../icons/MpesaIcon";
 
 type Phase = "form" | "push-sent" | "waiting" | "success";
 
@@ -66,14 +65,14 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
     form: "Insufficient Balance",
     "push-sent": "STK Push Sent",
     waiting: "Waiting for payment…",
-    success: "Wallet Topped Up!",
+    success: "Deposit Complete!",
   }[phase];
 
   const headerSubtitle = {
     form: "Your Cashia wallet doesn't have enough funds for this deposit",
     "push-sent": "Check your phone for the M-Pesa prompt",
     waiting: "Complete the payment on your phone",
-    success: "Continuing with your Betika deposit…",
+    success: "Cashia is fulfilling your Betika deposit",
   }[phase];
 
   return (
@@ -143,15 +142,15 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
               )}
               {isValidAmount && <div className="mb-3" />}
               <p className="m-0 mb-4 text-[12px] text-grey-500 leading-relaxed text-center">
-                Direct deposit — M-Pesa tops up your Cashia wallet, then your Betika deposit continues automatically.
+                Direct deposit — M-Pesa tops up your Cashia wallet and Cashia completes your Betika deposit automatically.
               </p>
               <button
                 onClick={startTopUp}
                 disabled={!isValidAmount}
-                className="w-full py-[13px] rounded-[10px] border-none bg-mpesa-green hover:bg-mpesa-green-dark disabled:opacity-50 disabled:cursor-not-allowed text-white text-[14px] font-bold cursor-pointer mb-2.5 transition-colors duration-[150ms] flex items-center justify-center gap-2"
+                className="w-full py-[13px] rounded-[10px] border-none bg-cashia-pink-500 hover:bg-cashia-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[14px] font-bold cursor-pointer mb-2.5 transition-colors duration-[150ms] flex items-center justify-center gap-2"
               >
-                <MpesaIcon size={16} color="white" />
-                Top Up with M-Pesa
+                <CashiaLogo size={16} color="white" />
+                Top Up Wallet
               </button>
               <button
                 onClick={handleClose}
@@ -164,12 +163,12 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
 
           {phase === "push-sent" && (
             <div className="text-center py-2">
-              <div className="bg-grey-100 rounded-[10px] px-4 py-3 mb-4 flex justify-between items-center">
+              <div className="bg-cashia-pink-50 border border-cashia-pink-200 rounded-[10px] px-4 py-3 mb-4 flex justify-between items-center">
                 <div className="text-left">
                   <p className="m-0 text-[11px] text-grey-500 font-medium">TOPPING UP CASHIA WALLET</p>
                   <p className="mt-0.5 mb-0 text-[13px] font-bold text-grey-900">Direct deposit</p>
                 </div>
-                <p className="m-0 text-[20px] font-extrabold text-mpesa-green-dark">KES {parsedTopUp.toLocaleString()}</p>
+                <p className="m-0 text-[20px] font-extrabold text-cashia-pink-500">KES {parsedTopUp.toLocaleString()}</p>
               </div>
               <div className="flex justify-center gap-1.5 mb-3">
                 {[0, 1, 2].map((i) => (
@@ -177,7 +176,7 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
                     key={i}
                     style={{
                       width: 8, height: 8, borderRadius: "50%",
-                      background: "var(--color-mpesa-green)", opacity: 0.3,
+                      background: "var(--color-cashia-pink-500)", opacity: 0.3,
                       animation: `dotBounce 1s ease-in-out ${i * 0.15}s infinite`,
                     }}
                   />
@@ -192,11 +191,11 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
 
           {phase === "waiting" && (
             <div className="text-center py-2">
-              <div className="bg-grey-100 rounded-[10px] px-4 py-3 mb-4 flex justify-between items-center">
+              <div className="bg-cashia-pink-50 border border-cashia-pink-200 rounded-[10px] px-4 py-3 mb-4 flex justify-between items-center">
                 <p className="m-0 text-[11px] text-grey-500 font-medium">TOPPING UP CASHIA WALLET</p>
-                <p className="m-0 text-[20px] font-extrabold text-mpesa-green-dark">KES {parsedTopUp.toLocaleString()}</p>
+                <p className="m-0 text-[20px] font-extrabold text-cashia-pink-500">KES {parsedTopUp.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-full border-[3px] border-grey-150 border-t-[3px] border-t-mpesa-green mx-auto mb-3 spinner" />
+              <div className="w-12 h-12 rounded-full border-[3px] border-grey-150 border-t-[3px] border-t-cashia-pink-500 mx-auto mb-3 spinner" />
               <p className="m-0 text-[12px] text-grey-500">Waiting for confirmation{"." .repeat(dots)}</p>
             </div>
           )}
@@ -204,9 +203,9 @@ export default function InsufficientStep({ amount, balance, onTopUpSuccess }: Pr
           {phase === "success" && (
             <div className="fade-in text-center py-1 pb-2">
               <p className="m-0 text-[14px] text-grey-900 font-semibold">
-                KES {parsedTopUp.toLocaleString()} added to your Cashia wallet
+                KES {Number(amount).toLocaleString()} deposited to Betika
               </p>
-              <p className="mt-1.5 mb-0 text-[12px] text-grey-500">Resuming your deposit…</p>
+              <p className="mt-1.5 mb-0 text-[12px] text-grey-500">No further action needed</p>
             </div>
           )}
         </div>

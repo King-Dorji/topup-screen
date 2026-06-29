@@ -7,13 +7,26 @@ import LoadingStep from "./cashia-pay/LoadingStep";
 import OTPStep, { OTP_LENGTH } from "./cashia-pay/OTPStep";
 import SuccessStep from "./cashia-pay/SuccessStep";
 import InsufficientStep from "./cashia-pay/InsufficientStep";
+import GuestChoiceStep from "./cashia-pay/GuestChoiceStep";
+import OnboardingStep from "./cashia-pay/OnboardingStep";
+import JoinLaterStep from "./cashia-pay/JoinLaterStep";
 
 const DUMMY_OTP = "123456";
 
-type Step = "loading" | "otp" | "success" | "error" | "insufficient";
+type Step =
+  | "loading"
+  | "guest-choice"
+  | "onboarding"
+  | "join-later"
+  | "otp"
+  | "success"
+  | "error"
+  | "insufficient";
 
 export default function CashiaPayIframe() {
   const [step, setStep] = useState<Step>("loading");
+  const [isMember, setIsMember] = useState(true);
+  const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [isError, setIsError] = useState(false);
   const [amount, setAmount] = useState<string>("200");
@@ -24,13 +37,22 @@ export default function CashiaPayIframe() {
     const params = new URLSearchParams(window.location.search);
     const amt = params.get("amount");
     const bal = params.get("balance");
+    const member = params.get("member") !== "false";
+    const phoneParam = params.get("phone") ?? "";
+
     if (amt) setAmount(amt);
     if (bal) setBalance(Number(bal));
+    setIsMember(member);
+    setPhone(phoneParam);
 
     const parsedAmt = Number(amt ?? 200);
     const parsedBal = Number(bal ?? Infinity);
 
     const timer = setTimeout(() => {
+      if (!member) {
+        setStep("guest-choice");
+        return;
+      }
       setStep(parsedAmt > parsedBal ? "insufficient" : "otp");
     }, 1800);
     return () => clearTimeout(timer);
@@ -79,10 +101,14 @@ export default function CashiaPayIframe() {
     else inputRefs.current[pasted.length]?.focus();
   };
 
+  const completeDeposit = useCallback(() => {
+    setStep("success");
+    setTimeout(() => window.parent.postMessage({ type: "CASHIA_PAY_SUCCESS", amount }, "*"), 1200);
+  }, [amount]);
+
   const verify = (code: string) => {
     if (code === DUMMY_OTP) {
-      setStep("success");
-      setTimeout(() => window.parent.postMessage({ type: "CASHIA_PAY_SUCCESS", amount }, "*"), 1200);
+      completeDeposit();
     } else {
       setIsError(true);
       setOtp(Array(OTP_LENGTH).fill(""));
@@ -92,9 +118,15 @@ export default function CashiaPayIframe() {
 
   const isComplete = otp.filter(Boolean).length === OTP_LENGTH;
 
-  const handleTopUpSuccess = useCallback((topUpAmount: number) => {
-    setBalance((prev) => prev + topUpAmount);
-    setStep("otp");
+  const handleTopUpSuccess = useCallback((_topUpAmount: number) => {
+    setBalance((prev) => prev + _topUpAmount);
+    completeDeposit();
+  }, [completeDeposit]);
+
+  const handleOnboardingComplete = useCallback(() => {
+    setIsMember(true);
+    setBalance(0);
+    setStep("insufficient");
   }, []);
 
   if (step === "insufficient") {
@@ -107,18 +139,31 @@ export default function CashiaPayIframe() {
     );
   }
 
+  if (step === "join-later") {
+    return (
+      <JoinLaterStep
+        amount={amount}
+        phone={phone}
+        onSuccess={completeDeposit}
+      />
+    );
+  }
+
+  const loadingCopy = isMember
+    ? { title: "Preparing your payment", subtitle: "Sending OTP to your phone…" }
+    : { title: "Connecting to Cashia", subtitle: "Checking your account…" };
+
+  const isTallStep = step === "guest-choice" || step === "onboarding";
+
   return (
-    /* Backdrop — drawn by Cashia's page, not Betika */
     <div
       className="fixed inset-0 bg-[rgba(10,16,26,0.75)] backdrop-blur-sm flex items-center justify-center p-4"
       onClick={() => window.parent.postMessage({ type: "CASHIA_CLOSE" }, "*")}
     >
-      {/* Card shell — also owned by Cashia */}
       <div
         className="modal-enter w-[min(460px,100%)] h-[min(600px,calc(100vh-80px))] rounded-2xl overflow-hidden flex flex-col bg-white shadow-[0_32px_80px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.06)] relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="px-6 pt-5 pb-4 border-b border-grey-100 flex items-center gap-2.5">
           <CashiaLogo size={26} color="var(--color-cashia-pink-500)" />
           <span className="text-[18px] font-bold text-cashia-pink-500 tracking-[-0.3px]">Cashia</span>
@@ -128,9 +173,24 @@ export default function CashiaPayIframe() {
           </span>
         </div>
 
-        {/* Body */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-3">
-          {step === "loading" && <LoadingStep />}
+        <div
+          className={`flex-1 min-h-0 flex flex-col items-center px-6 overflow-y-auto ${
+            isTallStep ? "justify-start py-5" : "justify-center py-3"
+          }`}
+        >
+          {step === "loading" && (
+            <LoadingStep title={loadingCopy.title} subtitle={loadingCopy.subtitle} />
+          )}
+          {step === "guest-choice" && (
+            <GuestChoiceStep
+              amount={amount}
+              onOnboard={() => setStep("onboarding")}
+              onJoinLater={() => setStep("join-later")}
+            />
+          )}
+          {step === "onboarding" && (
+            <OnboardingStep phone={phone} onComplete={handleOnboardingComplete} />
+          )}
           {step === "otp" && (
             <OTPStep
               amount={amount}
@@ -152,7 +212,6 @@ export default function CashiaPayIframe() {
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-3 border-t border-grey-100 flex items-center justify-center gap-1.5">
           <LockIcon />
           <span className="text-[11px] text-grey-400">256-bit SSL encrypted · Powered by Cashia</span>
